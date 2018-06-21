@@ -82,16 +82,16 @@ if (role == 1)  {
         unsigned long end_time = micros();
         
 //         Spew it
-//        Serial.print(F("Sent "));
-//        Serial.print(start_time);
-//        Serial.print(F(", Got response "));
-//        Serial.print(got_time);
-//        Serial.print(F(", Round-trip delay "));
-//        Serial.print(end_time-start_time);
-//        Serial.println(F(" microseconds"));
+        Serial.print(F("Sent "));
+        Serial.print(start_time);
+        Serial.print(F(", Got response "));
+        Serial.print(got_time);
+        Serial.print(F(", Round-trip delay "));
+        Serial.print((end_time-start_time)/1000);
+        Serial.println(F(" milliseconds"));
 //        Serial.print(x);
 
-        Serial.println((end_time-start_time)/1000);
+//        Serial.println((end_time-start_time)/1000);
 
           
      
