@@ -10,17 +10,14 @@
 
 /****************** User Config ***************************/
 /***      Set this radio as radio number 0 or 1         ***/
-bool radioNumber = 0;
-int x = 0;
-double start[100];
-double ending[100];
-double trip[100];
-double average_time = 0;
+bool radioNumber = 1;
+
 /* Hardware configuration: Set up nRF24L01 radio on SPI bus plus pins 7 & 8 */
 RF24 radio(7,8);
 /**********************************************************/
 
 byte addresses[][6] = {"1Node","2Node"};
+
 
 // Used to control whether this node is sending or receiving
 bool role = 0;
@@ -60,14 +57,14 @@ if (role == 1)  {
     
     Serial.println(F("Now sending"));
 
-    double start_time = micros();                             // Take the time, and send it.  This will block until complete
+    unsigned long start_time = micros();                             // Take the time, and send it.  This will block until complete
      if (!radio.write( &start_time, sizeof(unsigned long) )){
        Serial.println(F("failed"));
      }
         
     radio.startListening();                                    // Now, continue listening
     
-    double started_waiting_at = micros();               // Set up a timeout period, get the current microseconds
+    unsigned long started_waiting_at = micros();               // Set up a timeout period, get the current microseconds
     boolean timeout = false;                                   // Set up a variable to indicate if a response was received or not
     
     while ( ! radio.available() ){                             // While nothing is received
@@ -80,13 +77,10 @@ if (role == 1)  {
     if ( timeout ){                                             // Describe the results
         Serial.println(F("Failed, response timed out."));
     }else{
-        double got_time;                                 // Grab the response, compare, and send to debugging spew
+        unsigned long got_time;                                 // Grab the response, compare, and send to debugging spew
         radio.read( &got_time, sizeof(unsigned long) );
-        double end_time = micros();
-
-
+        unsigned long end_time = micros();
         
-
         // Spew it
         Serial.print(F("Sent "));
         Serial.print(start_time);
@@ -95,26 +89,10 @@ if (role == 1)  {
         Serial.print(F(", Round-trip delay "));
         Serial.print(end_time-start_time);
         Serial.println(F(" microseconds"));
+    }
 
-        start[x] = start_time;
-        ending[x] = end_time;
-        trip[x] = end_time-start_time;
-    }
-    x = x + 1;
     // Try again 1s later
-    delay(500);
-    //Finished: show the average
-    if(x == 99){
-        for(int n=0; n<100; n++){
-            average_time = average_time + trip[n];
-        }
-        average_time = average_time/100;
-        Serial.print("Average = ");
-        Serial.print(average_time/1000);
-        Serial.println(F(" milliseconds"));
-    }
-    
-    
+    delay(1000);
   }
 
 
